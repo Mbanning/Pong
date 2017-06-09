@@ -16,7 +16,6 @@ public class Ball extends GameObject {
     @Override
     public void draw(Graphics g) {
         g.setColor(Color.WHITE);
-        g.drawRect(getX(), getY(), 5, 5);
-        g.fillRect(getX(), getY(), 5, 5);
+        g.fillRect(getX(), getY(), Constants.BALL_SIZE, Constants.BALL_SIZE);
     }
 }
