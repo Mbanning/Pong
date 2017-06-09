@@ -16,13 +16,17 @@ public class GameView extends JPanel implements ActionListener {
 
     Ball ball;
     Timer timer;
-    int ballDx = 1;
-    int ballDy = 1;
+    int ballDx = 2;
+    int ballDy = 2;
 
 
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
+        g.setColor(Color.WHITE);
+        g.drawLine(Constants.BOARD_WIDTH/2, 0, Constants.BOARD_WIDTH/2, Constants.BOARD_HEIGHT);
+        g.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 32));
+        g.drawString("1", Constants.BOARD_WIDTH/4, 50);
         ball.draw(g);
     }
 
@@ -31,7 +35,7 @@ public class GameView extends JPanel implements ActionListener {
         setSize(Constants.BOARD_WIDTH, Constants.BOARD_HEIGHT);
         setBackground(Color.black);
         ball = new Ball();
-        timer = new Timer(10, this);
+        timer = new Timer(Constants.DELAY, this);
         timer.start();
         repaint();
     }
@@ -40,7 +44,7 @@ public class GameView extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if(ball.getX() <= Constants.BOARD_WIDTH && ball.getY() <= Constants.BOARD_HEIGHT) {
             if(ball.getX() >= Constants.BOARD_WIDTH - 5 || ball.getX() <= 0) ballDx *= -1;
-            if(ball.getY() >= (Constants.BOARD_HEIGHT + 20) || ball.getY() <= 0) ballDy *= -1;
+            if(ball.getY() >= (Constants.BOARD_HEIGHT - 25) || ball.getY() <= 0) ballDy *= -1;
             ball.move(ballDx, ballDy);
         }
         repaint();
