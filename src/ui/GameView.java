@@ -1,7 +1,5 @@
 package ui;
 
-import com.sun.tools.internal.jxc.ap.Const;
-import javafx.scene.input.KeyCode;
 import objects.Ball;
 import objects.Paddle;
 import utils.Constants;
@@ -21,6 +19,9 @@ public class GameView extends JPanel implements ActionListener {
     Timer timer;
     int ballDx = 2;
     int ballDy = 2;
+
+    boolean movePaddleOneUp = false;
+    boolean movePaddleOneDown = false;
 
 
     @Override
@@ -56,6 +57,13 @@ public class GameView extends JPanel implements ActionListener {
             if(ball.getY() >= (Constants.BOARD_HEIGHT - 25) || ball.getY() <= 0) ballDy *= -1;
             ball.move(ballDx, ballDy);
         }
+        if(paddleOne.getY() >= 0 && movePaddleOneUp) {
+            paddleOne.moveVertically(-2);
+        }
+        if(paddleOne.getY() <= Constants.BOARD_HEIGHT - 50 && movePaddleOneDown) {
+            paddleOne.moveVertically(2);
+            Rectangle rectangle = new Rectangle();
+        }
         repaint();
     }
 
@@ -63,12 +71,20 @@ public class GameView extends JPanel implements ActionListener {
 
         @Override
         public void keyPressed(KeyEvent event) {
-            System.out.println(event.toString());
+            if(event.getKeyCode() == KeyEvent.VK_UP) {
+                movePaddleOneUp = true;
+            }
+            if(event.getKeyCode() == KeyEvent.VK_DOWN) {
+                movePaddleOneDown = true;
+            }
         }
 
         @Override
         public void keyReleased(KeyEvent e) {
-            System.out.println(e.toString());
+            if(e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN) {
+                movePaddleOneUp = false;
+                movePaddleOneDown = false;
+            }
         }
     }
 }
