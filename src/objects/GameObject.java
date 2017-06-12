@@ -7,29 +7,27 @@ import java.awt.*;
  */
 public abstract class GameObject {
 
-    private int x;
-    private int y;
+    private Rectangle object;
 
-    public GameObject() {
-        this(0, 0);
-    }
 
-    public GameObject(int x, int y) {
-        this.x = x;
-        this.y = y;
+    public GameObject(int x, int y, int width, int height) {
+         object = new Rectangle(x, y, width, height);
     }
 
     public void move(int dx, int dy) {
-        x += dx;
-        y += dy;
+        object.translate(dx, dy);
     }
 
-    public int getX() {
-        return x;
+    public Rectangle getRectangle() {
+        return object;
     }
 
-    public int getY() {
-        return y;
+    public double getX() {
+        return object.getX();
+    }
+
+    public double getY() {
+        return object.getY();
     }
 
     public void moveHorizontally(int dx) {
@@ -40,5 +38,11 @@ public abstract class GameObject {
         move(0, dy);
     }
 
-    public abstract void draw(Graphics g);
+    public boolean isIntersecting(GameObject object) {
+        return this.object.intersects(object.getRectangle());
+    }
+
+    public void draw(Graphics g) {
+        g.fillRect((int) object.getX(),(int) object.getY(),(int) object.getWidth(),(int) object.getHeight());
+    }
 }

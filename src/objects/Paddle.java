@@ -1,5 +1,7 @@
 package objects;
 
+import utils.Constants;
+
 import java.awt.*;
 
 /**
@@ -8,12 +10,6 @@ import java.awt.*;
 public class Paddle extends GameObject {
 
     public Paddle(int x, int y) {
-        super(x, y);
-    }
-
-    @Override
-    public void draw(Graphics g) {
-        g.setColor(Color.WHITE);
-        g.fillRect(getX(), getY(), 5, 25);
+        super(x, y, Constants.PADDLE_WIDTH, Constants.PADDLE_HEIGHT);
     }
 }

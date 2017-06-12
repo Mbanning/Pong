@@ -10,12 +10,6 @@ import java.awt.*;
 public class Ball extends GameObject {
 
     public Ball() {
-        super(Constants.BOARD_WIDTH/2, Constants.BOARD_HEIGHT/2);
-    }
-
-    @Override
-    public void draw(Graphics g) {
-        g.setColor(Color.WHITE);
-        g.fillRect(getX(), getY(), Constants.BALL_SIZE, Constants.BALL_SIZE);
+        super(Constants.BOARD_WIDTH/2, Constants.BOARD_HEIGHT/2, Constants.BALL_SIZE, Constants.BALL_SIZE);
     }
 }
