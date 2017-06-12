@@ -1,5 +1,6 @@
 package ui;
 
+import com.sun.tools.internal.jxc.ap.Const;
 import objects.Ball;
 import objects.Paddle;
 import utils.Constants;
@@ -8,9 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-/**
- * Created by Mason on 6/5/17.
- */
+
 public class GameView extends JPanel implements ActionListener {
 
     Ball ball;
@@ -19,6 +18,8 @@ public class GameView extends JPanel implements ActionListener {
     Timer timer;
     int ballDx = 2;
     int ballDy = 2;
+    int paddleOneScore = 0;
+    int paddleTwoScore = 0;
 
     boolean movePaddleOneUp = false;
     boolean movePaddleOneDown = false;
@@ -30,7 +31,8 @@ public class GameView extends JPanel implements ActionListener {
         g.setColor(Color.WHITE);
         g.drawLine(Constants.BOARD_WIDTH/2, 0, Constants.BOARD_WIDTH/2, Constants.BOARD_HEIGHT);
         g.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 32));
-        g.drawString("1", Constants.BOARD_WIDTH/4, 50);
+        g.drawString(Integer.toString(paddleOneScore), Constants.BOARD_WIDTH/4, 50);
+        g.drawString(Integer.toString(paddleTwoScore), 3 * Constants.BOARD_WIDTH/4, 50);
         ball.draw(g);
         paddleOne.draw(g);
         paddleTwo.draw(g);
@@ -42,9 +44,9 @@ public class GameView extends JPanel implements ActionListener {
         setSize(Constants.BOARD_WIDTH, Constants.BOARD_HEIGHT);
         setBackground(Color.black);
         addKeyListener(new Adapter());
-        ball = new Ball();
-        paddleOne = new Paddle(20, 20);
-        paddleTwo = new Paddle(Constants.BOARD_WIDTH - 20, 20);
+        resetBall();
+        paddleOne = new Paddle(Constants.PADDLE_OFFSET, Constants.BOARD_HEIGHT/2);
+        paddleTwo = new Paddle(Constants.BOARD_WIDTH - Constants.PADDLE_OFFSET, Constants.BOARD_HEIGHT/2);
         timer = new Timer(Constants.DELAY, this);
         timer.start();
         repaint();
@@ -52,19 +54,47 @@ public class GameView extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(ball.getX() <= Constants.BOARD_WIDTH && ball.getY() <= Constants.BOARD_HEIGHT) {
-            if(ball.getX() >= Constants.BOARD_WIDTH - 5 || ball.getX() <= 0) ballDx *= -1;
-            if(ball.getY() >= (Constants.BOARD_HEIGHT - 25) || ball.getY() <= 0) ballDy *= -1;
-            ball.move(ballDx, ballDy);
+        checkPaddleCollision();
+        handleBallMovement();
+        handlePaddleMovement();
+        repaint();
+    }
+
+    public void resetBall() {
+        ball = new Ball();
+    }
+
+    public void checkPaddleCollision() {
+        if(ball.isIntersecting(paddleOne) || ball.isIntersecting(paddleTwo)) {
+            ballDx *= -1;
         }
-        if(paddleOne.getY() >= 0 && movePaddleOneUp) {
+    }
+
+    public void handlePaddleMovement() {
+        if(!paddleOne.getRectangle().intersectsLine(0, 0, Constants.BOARD_WIDTH, 0) && movePaddleOneUp) {
             paddleOne.moveVertically(-2);
         }
-        if(paddleOne.getY() <= Constants.BOARD_HEIGHT - 50 && movePaddleOneDown) {
+        if(!paddleOne.getRectangle().intersectsLine(0, Constants.BOARD_HEIGHT, Constants.BOARD_WIDTH, Constants.BOARD_HEIGHT) && movePaddleOneDown) {
             paddleOne.moveVertically(2);
-            Rectangle rectangle = new Rectangle();
         }
-        repaint();
+    }
+
+    public void handleBallMovement() {
+        if(ball.getX() <= Constants.BOARD_WIDTH && ball.getY() <= Constants.BOARD_HEIGHT) {
+            if(ball.getRectangle().intersectsLine(0, 0, 0, Constants.BOARD_HEIGHT)) {
+                ++paddleTwoScore;
+                resetBall();
+                ballDx *= -1;
+            }
+            if(ball.getRectangle().intersectsLine(Constants.BOARD_WIDTH, 0, Constants.BOARD_WIDTH, Constants.BOARD_HEIGHT)) {
+                ++paddleOneScore;
+                resetBall();
+                ballDx *= -1;
+            }
+            if(ball.getRectangle().intersectsLine(0, Constants.BOARD_HEIGHT, Constants.BOARD_WIDTH, Constants.BOARD_HEIGHT)
+                    || ball.getRectangle().intersectsLine(0, 0, Constants.BOARD_WIDTH, 0)) ballDy *= -1;
+            ball.move(ballDx, ballDy);
+        }
     }
 
     public class Adapter extends KeyAdapter {
