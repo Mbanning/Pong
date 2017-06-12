@@ -16,13 +16,15 @@ public class GameView extends JPanel implements ActionListener {
     Paddle paddleOne;
     Paddle paddleTwo;
     Timer timer;
-    int ballDx = 2;
-    int ballDy = 2;
+    int ballDx = 3;
+    int ballDy = 3;
     int paddleOneScore = 0;
     int paddleTwoScore = 0;
 
     boolean movePaddleOneUp = false;
     boolean movePaddleOneDown = false;
+    boolean movePaddleTwoUp = false;
+    boolean movePaddleTwoDown = false;
 
 
     @Override
@@ -57,6 +59,7 @@ public class GameView extends JPanel implements ActionListener {
         checkPaddleCollision();
         handleBallMovement();
         handlePaddleMovement();
+        handleComputerMovement();
         repaint();
     }
 
@@ -77,6 +80,12 @@ public class GameView extends JPanel implements ActionListener {
         if(!paddleOne.getRectangle().intersectsLine(0, Constants.BOARD_HEIGHT, Constants.BOARD_WIDTH, Constants.BOARD_HEIGHT) && movePaddleOneDown) {
             paddleOne.moveVertically(2);
         }
+        if(!paddleTwo.getRectangle().intersectsLine(0, 0, Constants.BOARD_WIDTH, 0) && movePaddleTwoUp) {
+            paddleTwo.moveVertically(-2);
+        }
+        if(!paddleTwo.getRectangle().intersectsLine(0, Constants.BOARD_HEIGHT, Constants.BOARD_WIDTH, Constants.BOARD_HEIGHT) && movePaddleTwoDown) {
+            paddleTwo.moveVertically(2);
+        }
     }
 
     public void handleBallMovement() {
@@ -94,6 +103,22 @@ public class GameView extends JPanel implements ActionListener {
             if(ball.getRectangle().intersectsLine(0, Constants.BOARD_HEIGHT, Constants.BOARD_WIDTH, Constants.BOARD_HEIGHT)
                     || ball.getRectangle().intersectsLine(0, 0, Constants.BOARD_WIDTH, 0)) ballDy *= -1;
             ball.move(ballDx, ballDy);
+        }
+    }
+
+    public void handleComputerMovement() {
+        if (ball.getX() > Constants.BOARD_WIDTH/2) {
+            if(paddleTwo.getY() > ball.getY()) {
+                movePaddleTwoUp = true;
+                movePaddleTwoDown = false;
+            }
+            if(paddleTwo.getY() < ball.getY()){
+                movePaddleTwoUp = false;
+                movePaddleTwoDown = true;
+            }
+        } else {
+            movePaddleTwoDown = false;
+            movePaddleTwoUp = false;
         }
     }
 
